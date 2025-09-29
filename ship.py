@@ -28,10 +28,10 @@ class Ship():
 
     def update(self):
         '''Att the ship's moviment'''
-        if self.moving_right:
-            self.center += self.ai_settings.ship_speed_dactor
-        if self.moving_left:
-            self.center-= self.ai_settings.ship_speed_dactor
+        if self.moving_right and self.rect.right < self.screen_rect.right:
+            self.center += self.ai_settings.ship_speed_factor
+        if self.moving_left and self.rect.left > 0:
+            self.center-= self.ai_settings.ship_speed_factor
 
         self.rect.centerx = self.center
         

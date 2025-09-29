@@ -40,12 +40,22 @@ def check_keyup_events(event, ship):
     elif event.key == pygame.K_LEFT:
         ship.moving_left = False   
 
-def update_bullets(bullets):
+def update_bullets(ai_settings, screen, ship, aliens, bullets):
     '''Att the bullets position to get rid old bullets'''
     bullets.update()
     for bullet in bullets.copy():
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
+
+    check_bullet_alien_collisions(ai_settings, screen, ship, aliens, bullets)
+
+def check_bullet_alien_collisions(ai_settings, screen, ship, aliens, bullets):
+    '''Response to colision against aliens'''
+    collisions = pygame.sprite.groupcollide(bullets,
+                                            aliens, True, True)
+    if len(aliens) == 0:
+        bullets.empty()
+        create_fleet(ai_settings, screen, ship, aliens)
 
 def update_screen(ai_settings, screen, ship, aliens,  bullets):
     '''Att images on the screen and altern to the new screen'''
@@ -83,10 +93,30 @@ def create_fleet(ai_settings, screen, ship, aliens):
         for alien_number in range(number_aliens_x):
             create_alien(ai_settings, screen, aliens, alien_number, row_number)
 
-
 def get_number_rows(ai_settings, ship_height, alien_height):
     '''Determines how many aliens a line can fit in a screen'''
     available_space_y = (ai_settings.screen_height - 
                          (3 * alien_height) - ship_height)
     number_rows = int(available_space_y / (2 * alien_height))
     return number_rows
+
+def update_aliens(ai_settings, ship,  aliens):
+    '''Update all alien's positions in the fleet'''
+    check_fleet_edges(ai_settings, aliens)
+    aliens.update()
+
+    if pygame.sprite.spritecollideany(ship, aliens):
+        print("Ship hit!!!")
+
+def check_fleet_edges(ai_settings, aliens):
+    '''Response propely if some alien reachs the edge'''
+    for alien in aliens.sprites():
+        if alien.check_edges():
+            change_fleet_direction(ai_settings, aliens)
+            break
+
+def change_fleet_direction(ai_settings, aliens):
+    '''Do all fleet go down and change direction'''
+    for alien in aliens.sprites():
+        alien.rect.y += ai_settings.fleet_drop_speed
+    ai_settings.fleet_direction *= -1

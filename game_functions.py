@@ -58,13 +58,17 @@ def check_bullet_alien_collisions(ai_settings, screen, ship, aliens, bullets):
         bullets.empty()
         create_fleet(ai_settings, screen, ship, aliens)
 
-def update_screen(ai_settings, screen, ship, aliens,  bullets):
+def update_screen(ai_settings, screen, stats, ship, aliens,  bullets,
+play_button):
     '''Att images on the screen and altern to the new screen'''
     screen.fill(ai_settings.bg_color)
     for bullet in bullets.sprites():
         bullet.draw_bullet()
     ship.blitme()
     aliens.draw(screen)
+
+    if not stats.game_activate:
+        play_button.draw_button()
 
     pygame.display.flip()
 

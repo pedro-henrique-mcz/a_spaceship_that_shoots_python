@@ -5,7 +5,7 @@ class GameStats():
         '''Start the statistc data'''
         self.ai_settings = ai_settings
         self.reset_stats()
-        self.game_activate = True
+        self.game_activate = False
 
     def reset_stats(self):
         self.ships_left = self.ai_settings.ship_limit
